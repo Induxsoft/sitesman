@@ -1,0 +1,59 @@
+#include "dkli.dkh"
+#!
+module "model"
+{
+    @table_name = "fso_drive"
+
+    @list_query="SELECT sys_pk, fsname, path FROM #<@table_name> ORDER BY fsname;"
+
+    function read(&db, &params)
+    {
+        sql_unidad = ftext("SELECT sys_pk, fsname, path, admins, sys_recver FROM #<@table_name> WHERE #<@keyfield>=@_entity_id LIMIT 1;")
+        
+
+        new data
+        {
+            @"unidad*": dbr.list(db, sql_unidad, params)
+        }
+
+        do prepareView(db, params, data)
+
+        return data
+    }
+
+    function create(&db, &params, &data)
+    {
+        do entity.create(db, params, data)
+        exception
+        {
+            if dbr.in_transaction(db) { do dbr.rollback(db) }
+
+            ref formData = record.copy(data,"*")
+            code = last_error_code()
+            error = last_error()
+
+            do record.clear(data)
+            data<"form*"> : formData
+            
+            do prepareView(db,params,data)
+            do rise_error(code,error)
+        }
+    }
+
+    blank::&db,&params
+    {
+        new data {}
+        do prepareView(db,params,data)
+        return data
+    }
+
+    prepareView::&db,&params,&data
+    {
+        sql_ugroup = "SELECT sys_pk, description FROM usergroup ORDER BY description;"
+        data<"ugroup*"> : dbr.list(db, sql_ugroup, params)
+    }
+
+    point @read to read
+    point @blank to blank
+    point @create to create
+}

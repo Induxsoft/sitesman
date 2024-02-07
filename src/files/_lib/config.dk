@@ -1,0 +1,9 @@
+#include "dkli.dkh"
+#!
+module "config"
+{
+    if not(isset("@http_context")) { ref @http_context = @@(@crud_context,"&http") }
+
+    //* ======================================== [ _PACKAGE ]
+    @FILES_DRVMAN = "/!/files/drvman"
+}

@@ -1,0 +1,61 @@
+# include "ddm.dkh"
+model "productos y servicios"
+{
+	#include "induxsoft.abstracts.ddm"
+
+    entity "fso_drive" : "TableModel"
+    {
+        @"fsname" string(50) unique required 
+        @"path" string(1024) required // Directorio físico
+        @"admins" ref:"usergroup" required // Grupo con los permisos de administración
+    }
+
+    // Grupo de usuarios
+    entity "usergroup"
+    {
+        @"sys_pk" int key required autoincrement
+        @"sys_guid" string(32) unique required
+        @"sys_dtcreated" datetime
+        @"sys_timestamp" datetime required
+        @"sys_info" string(32)
+        @"sys_user" string(32)
+        @"sys_lastuser" string(32)
+        @"sys_exported" bool
+        @"sys_dtexported" datetime
+        @"sys_recver" int
+        @"sys_deleted" bool
+        @"sys_lock" int
+
+        @"description" string(80) required
+        @"groupid" string(15) unique required
+        @"notes" memo 
+        @"uf_hidetoolbar" string(1) 
+    }
+
+    // Información de la aplicación
+    entity "sys_app_catalog"
+    {
+        @"pack_id" string(32) required
+        @"app_id" string(32) key
+        @"app_title" string(255)
+        @"created" datetime required
+        @"app_info" mmemo
+    }
+    // Categoria de la aplicación
+    entity "sys_app_category"
+    {
+        @"id" string(32) key
+        @"title" string(255) required
+    }
+    // Recursos de la aplicación
+    entity "sys_app_shortcut" 
+    {
+        @"id" string(32) key
+        @"title" string(255) required
+        @"icon96x96" string(1024) required
+        @"src" string(1024) required
+        @"_blank" bool
+        @"appid" ref : "sys_app_catalog"
+        @"cat" ref :"sys_app_category"
+    }
+}
