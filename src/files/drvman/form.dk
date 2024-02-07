@@ -9,7 +9,7 @@ module "form"
     #include "../_lib/config.dk"
 
     do @context.begin(@crud_context)
-    
+
     ref unidad = @("&./unidad")
     ref ugroup = @("&./ugroup")
     ref get = @@(@http_context,"&request/get")
@@ -51,19 +51,19 @@ module "form"
                 input(type="hidden" name="sys_recver" value="#<@@(unidad,'sys_recver')>")
 
                 div(class="#<ifstr(@('error/message')!='','alert alert-danger','')>"){$"#<@('error/message')>"}
-                div(class="row")
+                div(class="row mt-3")
                 {
-                    div(class="col-12 col-sm-6")
+                    div(class="col-12 col-sm-4")
                     {
                         small(class="fw-bold"){"Nombre:"}
                         input(class="induxsoft-form-control" type="text" name="fsname" value="#<@@(unidad,'fsname')>" maxlength="50" required="")
                     }
-                    div(class="col-12 col-sm-6")       
+                    div(class="col-12 col-sm-8")       
                     {
                         small(class="fw-bold"){"Ruta:"}
                         input(class="induxsoft-form-control" type="text" name="path" value="#<@@(unidad,'path')>" maxlength="1024" required="")
                     }
-                    div(class="col-12 col-sm-6")       
+                    div(class="col-12 col-sm-4 mt-2")       
                     {
                         small(class="fw-bold"){"Grupo de administradores:"}
                         #! do uie.dbSelect(def_usergroup)

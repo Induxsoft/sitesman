@@ -6,4 +6,8 @@ module "config"
 
     //* ======================================== [ _PACKAGE ]
     @FILES_DRVMAN = "/!/files/drvman"
+
+    //* ======================================== [ _STATIC RESOURCES ]
+    @CSS_DRVMAN = "/$/files/css/drvman.css"
+    @JS_DRVMAN = "/$/files/js/drvman.js"
 }

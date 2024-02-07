@@ -6,6 +6,7 @@ module "list"
 	#include "serialize.dkh"
     #include "uielements.v12.dkl"
     #include "../_lib/config.dk"
+    #include "../_lib/icons.dk"
 
     do @context.begin(@crud_context)
 
@@ -15,11 +16,7 @@ module "list"
     print_actions::
     {
         @btn_class = "btn btn-sm border-secondary induxsoft-corners btn-main-action no-print"
-        #$
-        a(href="#<@FILES_DRVMAN>/_new/" class="#<@btn_class>"){$"Crear"}
-        button(class="#<@btn_class>" onclick=""){$"Editar"}
-        button(class="#<@btn_class>" onclick=""){$"Eliminar"}
-        button(class="#<@btn_class>" onclick=""){$"Abrir Explorador"}
+        #$ a(href="#<@FILES_DRVMAN>/_new/" class="#<@btn_class>"){$"Crear unidad"}
     }
 
     #! point actions to print_actions
@@ -34,6 +31,8 @@ module "list"
 
     #$ div
     {
+        link(href="#<@CSS_DRVMAN>" rel="stylesheet")
+        
         div(class="container-fluid p-0")
         {
             #! do uie.printV12FormBar(v12_form_bar_cfg)
@@ -47,11 +46,24 @@ module "list"
                     #! for i = 0; i < list.count(unidades)
                     {
                         ref unidad = list.obj(unidades, i)
+                        unidad_pk = @@(unidad, "#sys_pk")
                         
                         #$ div(class="col-12 col-sm-6 col-md-3 col-lg-2 p-2")
                         {
-                            div(class="d-flex align-items-center justify-content-center border shadow-sm" style="min-height: 10rem; cursor:pointer;")
+                            div(class="d-flex align-items-center justify-content-center border unit-container")
                             {
+                                div(class="dropdown unit-options-container")
+                                {
+                                    button(class="btn btn-sm shadow-none" type="button" id="dropdownMenuButton1" "data-bs-toggle"="dropdown"){
+                                        $"#<@ICON_THREE_DOTS_VERTICAL>"
+                                    }
+                                    ul(class="dropdown-menu rounded-0 shadow-sm" "aria-labelledby"="dropdownMenuButton1")
+                                    {
+                                        li{a(class="dropdown-item" href="#<@FILES_DRVMAN>/#<unidad_pk>/"){$"Editar"}}
+                                        li{a(class="dropdown-item" href="#" onclick="drvman.deleteUnit(#<unidad_pk>)"){$"Eliminar"}}
+                                        li{a(class="dropdown-item" href="#"){$"Abrir explorador"}}
+                                    }
+                                }
                                 small{$"#<@@(unidad,'fsname')>"}
                             }
                         }
@@ -59,5 +71,10 @@ module "list"
                 }
             }
         }
+
+        script(src="#<@JS_DRVMAN>"){$""}
+        script{$'
+            drvman.units = #<to.json(unidades)>;
+        '}
     }
 }

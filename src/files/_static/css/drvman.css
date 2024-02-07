@@ -1,0 +1,17 @@
+.unit-container {
+    min-height: 10rem;
+    position: relative;
+    background-color: #F5F5F5;
+}
+.unit-options-container {
+    position:absolute;
+    top: 4px;
+    right: 4px;
+    display: none;
+}
+.unit-container:hover {
+    box-shadow: 3px 6px 9px 0 #EDEDED !important;
+}
+.unit-container:hover .unit-options-container {
+    display: initial;
+}
