@@ -1,0 +1,17 @@
+.unit-container {
+    position: relative;
+    background-color: #F5F5F5;
+    transition: .3s;
+    text-decoration: none !important;
+    color: #888;
+}
+.unit-container:hover {
+    color: #0266C8 !important;
+}
+.unit-container:hover {
+    box-shadow: 3px 6px 9px 0 #DDD !important;
+}
+.unit-path {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

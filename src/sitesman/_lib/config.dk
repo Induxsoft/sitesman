@@ -1,0 +1,19 @@
+#include "dkli.dkh"
+#!
+module "config"
+{
+    if not(isset("@http_context")) { ref @http_context = @@(@crud_context,"&http") }
+
+    //* ======================================== [ _PACKAGE ]
+    @SITEMAN_DRVMAN = "/!/sitesman/drvman/"
+    @SITEMAN_EXPLORE = "/!/sitesman/drvman/go/explore/"
+
+    //* ======================================== [ _STATIC RESOURCES ]
+    @CSS_DRVMAN = "/$/sitesman/css/drvman.css"
+    @JS_DRVMAN = "/$/sitesman/js/drvman.js"
+    @IMG_DRVMAN_APP = "/$/sitesman/img/icons/web-app.png"
+    @IMG_DRVMAN_CONTENT = "/$/sitesman/img/icons/web-site.png"
+
+    //* ======================================== [ ... ]
+    @dklfso_privs_ext="._p_"    // Extensión para archivos de privilegios
+}

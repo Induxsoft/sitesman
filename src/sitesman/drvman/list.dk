@@ -1,0 +1,57 @@
+#include "dkli.dkh"
+#!
+module "list"
+{
+    #include "functions.dkh"
+	#include "serialize.dkh"
+    #include "uielements.v12.dkl"
+    #include "../_lib/config.dk"
+    #include "../_lib/icons.dk"
+
+    do @context.begin(@crud_context)
+
+    ref unidades = @("&./")
+    ref get = @@(@http_context,"&request/get")
+
+    new v12_form_bar_cfg
+    {
+        @"title": "Sitios, carpetas y archivos"
+        @"urlexit": "/"
+        member @"hidden" { @"print": @true }
+    }
+
+    #$ div
+    {
+        link(href="#<@CSS_DRVMAN>" rel="stylesheet")
+        
+        div(class="container-fluid p-0")
+        {
+            #! do uie.printV12FormBar(v12_form_bar_cfg)
+
+            #$ div(id="work_area" class="container-section mt-1 p-2 pt-0")
+            {
+                p{$"#<@('$error/message')>"}
+
+                div(class="row m-0 p-2")
+                {
+                    #! for i = 0; i < list.count(unidades)
+                    {
+                        ref unidad = list.obj(unidades, i)
+                        iscontent = @@(unidad, "#is_content")
+                        path = @@(unidad,"$path")
+                        url=@SITEMAN_EXPLORE+"?path="+url_encode(path)
+                        
+                        #$ div(class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 p-2")
+                        {
+                            a(href="#<url>" class="d-flex align-items-center justify-content-center unit-container")
+                            {
+                                img(src="#<ifstr(iscontent,@IMG_DRVMAN_CONTENT,@IMG_DRVMAN_APP)>")
+                                h6(class="p-2 text-center unit-path flex-grow-1"){$"#<file.name(path)>"}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

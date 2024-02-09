@@ -1,0 +1,114 @@
+#include "dkli.dkh"
+#!
+module "model"
+{
+    #include "../_lib/config.dk"
+    #include "webcl.dkh"
+
+    list::&db,&params
+    {
+        ref sites_path = get_sites_path()
+        ref sites = filter_sites(sites_path)
+        return sites
+    }
+
+    get_sites_path::
+    {
+        return list.dirs("web/")
+        exception { return list.create() }
+    }
+
+    filter_sites::&sites
+    {
+        ref list_sites = list.create()
+        
+        go foreach.lstr(index:i, value:v) with(sites)
+        {
+            _prot = path_protected(v)
+            idp = path.concat(_prot,"idp")
+
+            // Verificar que el idp 'db_idp_v12.dkl' existe en el directorio esperado
+            if dir.exists(_prot) && dir.exists(idp) && file.exists(path.concat(idp, "db_idp_v12.dk"))
+            {
+                // Incluir solo los conectados a la misma BD
+                if valide_current_db(v)
+                {
+                    new unit
+                    {
+                        @"path": v
+                        //@"url": gen_url(v)
+                        @"is_content": isContentSite(v)
+                    }
+                    do list.add(list_sites, unit)
+                }
+            }
+        }
+
+        return list_sites
+    }
+
+    isContentSite::path
+    {
+        _prot = path_protected(path)
+        return (not(file.exists(path.concat(_prot, "render.dk"))) || not(file.exists(path.concat(_prot, "routes.map"))))
+    }
+
+    valide_current_db::site_path
+    {
+        current_qn = @@(@http_context, "$session/idp/qname")
+        config = path.concat("_config", file.name(site_path)+".json")
+
+        if file.exists(config)
+        {
+            ref config_data = from.json(file.rtext(config))
+            if @@(config_data,"$qname") == current_qn { return @true }
+        }
+
+        return @false
+    }
+
+    gen_url::path
+    {
+        protocol = ifstr(parse.bool(@@(@http_context,"request/headers/HTTPS")),"https","http")
+        port = @@(@http_context,"$request/headers/SERVER_PORT")
+
+        return protocol+"://"+file.name(path)+":"+port+"/"
+    }
+
+    path_protected::path
+    {
+        return path.concat(path, "_protected")
+    }
+
+    check_privs::&db,&params
+    {
+        if not(field.exist(params,"path")) {
+            do rise_error(0, "Se esperaba el parámetro 'path'")
+        }
+        
+        path = decode_path(@@(params,"$path"))
+        priv_file = path.concat(path,@dklfso_privs_ext)
+        url = gen_url(path)
+        isContent = isContentSite(path)
+
+        if not(file.exists(priv_file))
+        {
+            admin_id = dbr.str(db, "SELECT sys_guid FROM usergroup WHERE groupid='Administradores' LIMIT 1;", @null)
+
+            if isContent { do file.wtext(priv_file, ftext('{ "dkl_fso_list": [{ "user" : "*" }], "admin": [{ "team": "#<admin_id>" }] }')) }
+            else { do file.wtext(priv_file, ftext('{ "admin": [{ "team": "#<admin_id>" }] }')) }
+
+            exception{ do rise_error(0, "No fué posible crear los permisos. " + last_error()) }
+        }
+
+        @http_context<"response/headers/location">: url+".folderview"
+    }
+
+    decode_path::path
+    {
+        return url_dcode(path)
+        exception { do rise_error(0, "El parámetro path no tiene una codificación para url válida") }
+    }
+
+    point @list to list
+}
