@@ -14,6 +14,12 @@ module "config"
     @IMG_DRVMAN_APP = "/$/sitesman/img/icons/web-app.png"
     @IMG_DRVMAN_CONTENT = "/$/sitesman/img/icons/web-site.png"
 
+    //* ======================================== [ AUTHORIZATIONS ]
+    @STM_AUT_ACCESS = "STM-00-00-000"
+    @STM_AUT_READONLY = "STM-00-00-001"
+    @STM_AUT_ACCESS_SITES = "STM-00-00-002"
+    @STM_AUT_ACCESS_PROPERTIES = "STM-00-00-003"
+
     //* ======================================== [ ... ]
     @dklfso_privs_ext="._p_"    // Extensión para archivos de privilegios
 }

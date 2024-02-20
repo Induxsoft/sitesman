@@ -1,0 +1,6 @@
+description,itemid,itemparent
+"Operaciones ERP","FX1-00-00-000",NULL
+"Sitesman","STM-00-00-000","FX1-00-00-000"
+"Solo lectura","STM-00-00-001","STM-00-00-000"
+"Acceso a sitios","STM-00-00-002","STM-00-00-000"
+"Acceso a propiedades","STM-00-00-003","STM-00-00-000"
