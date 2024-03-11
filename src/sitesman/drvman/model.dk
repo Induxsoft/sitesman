@@ -105,7 +105,7 @@ module "model"
             exception{ do rise_error(0, "No fué posible crear los permisos. " + last_error()) }
         }
 
-        @http_context<"response/headers/location">: url+".folderview"
+        @http_context<"response/headers/location">: url+".folderview?ids="+@@(@http_context,"$session/user/ids")
     }
 
     decode_path::path
