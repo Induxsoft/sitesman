@@ -97,7 +97,7 @@ module "model"
 
         if not(file.exists(priv_file))
         {
-            admin_id = dbr.str(db, "SELECT sys_guid FROM usergroup WHERE groupid='Administradores' LIMIT 1;", @null)
+            admin_id = dbr.vars.getd(db,"admins_group_id","Administradores")
 
             if isContent { do file.wtext(priv_file, ftext('{ "dkl_fso_list": [{ "user" : "*" }], "admin": [{ "team": "#<admin_id>" }] }')) }
             else { do file.wtext(priv_file, ftext('{ "admin": [{ "team": "#<admin_id>" }] }')) }
