@@ -1,4 +1,4 @@
-# sitesman.
+# Sitesman.
 El paquete Sitesman de V12 es el módulo encargado de la administración de archivos en sitios web dentro del ERP, ofreciendo herramientas para gestionar contenidos digitales de manera organizada y segura. Su función principal es permitir que las empresas mantengan actualizados sus portales y aplicaciones web con información coherente y centralizada.
 
 
